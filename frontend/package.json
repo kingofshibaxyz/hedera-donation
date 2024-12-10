@@ -1,0 +1,67 @@
+{
+  "name": "ui",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@hashgraph/sdk": "^2.54.2",
+    "@headlessui/react": "^2.2.0",
+    "@tanstack/react-query": "^5.50.1",
+    "@tanstack/react-query-devtools": "^5.55.0",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@ton/ton": "^15.0.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.18.101",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "axios": "^1.7.2",
+    "buffer": "^6.0.3",
+    "date-fns": "^4.1.0",
+    "hashconnect": "^3.0.13",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.53.2",
+    "react-icons": "^5.4.0",
+    "react-query-kit": "^3.3.0",
+    "react-router-dom": "^6.24.1",
+    "react-scripts": "^5.0.1",
+    "react-toastify": "^10.0.5",
+    "simple-crypto-js": "^3.0.1",
+    "sonner": "^1.7.0",
+    "web-vitals": "^2.1.4",
+    "zustand": "^4.5.4"
+  },
+  "scripts": {
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
+    "eject": "react-scripts eject",
+    "deploy": "npx serve -s build"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "react-app-rewired": "^2.2.1",
+    "tailwindcss": "^3.4.4",
+    "typescript": "^4.9.5"
+  }
+}
