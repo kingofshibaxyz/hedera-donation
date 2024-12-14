@@ -26,7 +26,7 @@ class CampaignTypeAdmin(admin.ModelAdmin):
 
 @admin.register(Token)
 class TokenAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'symbol', 'address',)
+    list_display = ('id', 'name', 'symbol', 'account_id', 'address',)
     search_fields = ('name', 'symbol',)
 
 

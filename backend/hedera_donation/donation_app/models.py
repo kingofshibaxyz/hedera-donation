@@ -28,7 +28,8 @@ class CampaignType(models.Model):
 class Token(models.Model):
     name = models.CharField(max_length=255)
     symbol = models.CharField(max_length=50)
-    address = models.CharField(max_length=255)
+    address = models.CharField(max_length=255)    
+    account_id = models.CharField(max_length=255, null=True)
     decimal = models.IntegerField(default=0)
 
     def __str__(self):
@@ -51,9 +52,9 @@ class Campaign(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     image = models.CharField(blank=True, null=True, default="https://placehold.co/150x150")
-    goal = models.DecimalField(max_digits=20, decimal_places=2)
-    current_amount = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
-    percentage_completed = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    goal = models.DecimalField(max_digits=40, decimal_places=2)
+    current_amount = models.DecimalField(max_digits=40, decimal_places=2, default=0.0)
+    percentage_completed = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
     organizer = models.ForeignKey(HederaUser, on_delete=models.CASCADE, related_name='campaigns')
     campaign_type = models.ForeignKey(CampaignType, on_delete=models.CASCADE)
     token = models.ForeignKey(Token, on_delete=models.CASCADE)
@@ -84,7 +85,7 @@ class Donation(models.Model):
     user = models.ForeignKey(
         'HederaUser', on_delete=models.CASCADE, related_name='donations'
     )
-    amount = models.DecimalField(max_digits=20, decimal_places=2)
+    amount = models.DecimalField(max_digits=40, decimal_places=2)
     date = models.DateTimeField(auto_now_add=True)
     transaction_hash = models.CharField(max_length=255, blank=True, null=True)
 

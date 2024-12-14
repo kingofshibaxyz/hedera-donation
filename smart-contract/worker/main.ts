@@ -38,9 +38,10 @@ async function processLogs(): Promise<void> {
             const jsonLogs = decodeLogs(logs);
 
             const donors: DonationUpsert[] = [];
-
+            let max_timestamp = "0";
             for (const jsonLog of jsonLogs) {
-                console.log(jsonLog);
+                console.log({ jsonLog });
+                if (Number(jsonLog.timestamp) > Number(max_timestamp)) max_timestamp = jsonLog.timestamp;
 
                 if (jsonLog.eventName === "DonationReceived") {
                     const transactionHash = jsonLog.transactionHash;
@@ -62,6 +63,7 @@ async function processLogs(): Promise<void> {
                         userId: user.id,
                         amount: Number(amount),
                         transactionHash: transactionHash,
+                        time: Number(jsonLog.timestamp),
                     });
                 } else if (jsonLog.eventName === "CampaignPublished") {
                     const campaign = await getCampaignByOnchainId(Number(jsonLog.args.campaignId));
@@ -91,10 +93,12 @@ async function processLogs(): Promise<void> {
             await upsertDonationsInBatch(donors);
             await processNewCampaigns();
 
-            await client.query("UPDATE donation_app_lastindexcrawl SET value = $1, updated_at = NOW() WHERE key = $2", [
-                Number(nowTimestamp) - 3,
-                key,
-            ]);
+            if (Number(max_timestamp) > 0)
+                await client.query(
+                    "UPDATE donation_app_lastindexcrawl SET value = $1, updated_at = NOW() WHERE key = $2",
+                    [max_timestamp, key],
+                );
+
             console.log(`Database updated for key "${key}" with the latest timestamp.`);
         } catch (error) {
             console.error("Error processing logs:", error);

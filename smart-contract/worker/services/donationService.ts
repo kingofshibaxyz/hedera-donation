@@ -14,22 +14,27 @@ export const upsertDonationsInBatch = async (donations: DonationUpsert[]): Promi
 
         const upsertQuery = `
             INSERT INTO donation_app_donation (campaign_id, user_id, transaction_hash, amount, date)
-            VALUES ($1, $2, $3, $4, NOW())
+            VALUES ($1, $2, $3, $4, $5)
             ON CONFLICT (campaign_id, user_id, transaction_hash)
             DO UPDATE SET
                 amount = EXCLUDED.amount,
-                date = NOW()
+                date = EXCLUDED.date
         `;
 
         for (const donation of donations) {
+            const formattedDate =
+                typeof donation.time === "number" ? new Date(donation.time * 1000).toISOString() : donation.time;
+
             await client.query(upsertQuery, [
                 donation.campaignId,
                 donation.userId,
                 donation.transactionHash,
                 donation.amount,
+                formattedDate,
             ]);
+
             console.log(
-                `Upserted donation: campaignId=${donation.campaignId}, userId=${donation.userId}, transactionHash=${donation.transactionHash}`,
+                `Upserted donation: campaignId=${donation.campaignId}, userId=${donation.userId}, transactionHash=${donation.transactionHash}, date=${formattedDate}`,
             );
         }
 

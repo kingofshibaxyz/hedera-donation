@@ -18,6 +18,7 @@ class TokenSchema(Schema):
     name: str
     symbol: str
     address: str
+    account_id: Optional[str] = None
 
 
 class CampaignSchema(Schema):

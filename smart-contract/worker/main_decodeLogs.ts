@@ -22,6 +22,7 @@ export function decodeLogs(logs: LogEntry[]): DecodedLog[] {
                     return acc;
                 }, {}),
                 transactionHash: log.transaction_hash,
+                timestamp: log.timestamp,
             };
 
             decodedLogs.push(jsonLog);

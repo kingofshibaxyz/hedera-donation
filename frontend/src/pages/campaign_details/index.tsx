@@ -1,9 +1,11 @@
 import { UrlMapping } from "@/commons/url-mapping.common";
 import Footer from "@/components/Footer";
 import NavigationBar from "@/components/NavBar";
+import { useHashConnectContext } from "@/contexts/hashconnect";
 import env from "@/env";
 import { useHederaDonate } from "@/hooks/useHederaDonate";
 import { useHederaTokenApproval } from "@/hooks/useHederaTokenApproval";
+import { useTokenBalance } from "@/hooks/useTokenBalance";
 import {
   CampaignStatus,
   useCampaignDetails,
@@ -12,12 +14,13 @@ import {
 import { getStatusBadgeClass } from "@/utils/colors";
 import { shortenTransactionHash } from "@/utils/transaction_string";
 import { formatDistanceToNow } from "date-fns";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 const CampaignDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [donationAmount, setDonationAmount] = useState<number>(0);
+  const { walletAddress } = useHashConnectContext();
 
   const navigate = useNavigate();
 
@@ -46,6 +49,21 @@ const CampaignDetailsPage: React.FC = () => {
   } = useDonationHistoryByCampaign({
     variables: { campaignId: Number(id) },
   });
+
+  const { getTokenBalance, balance } = useTokenBalance();
+
+  useEffect(() => {
+    if (
+      campaignDetails?.campaign?.token?.address &&
+      campaignDetails?.campaign?.token?.account_id
+    ) {
+      if (walletAddress)
+        getTokenBalance(
+          walletAddress,
+          campaignDetails?.campaign?.token?.account_id
+        );
+    }
+  }, [campaignDetails, walletAddress]);
 
   const handleDonate = async () => {
     if (campaignDetails?.campaign?.onchain_id && donationAmount > 0) {
@@ -347,7 +365,18 @@ const CampaignDetailsPage: React.FC = () => {
             </div>
           )}
           <div className="mb-8">
-            <h4 className="text-2xl font-bold text-blue-700">Donate</h4>
+            <h4 className="text-2xl font-bold text-blue-700">Your Balance</h4>
+            <p className="text-lg text-gray-600 mt-2">
+              <b>{balance}</b> {campaign.token?.symbol}
+              <span className="text-gray-500"> | </span>
+              {campaign.token?.name}
+              <span className="text-gray-500"> | </span>
+              {campaign.token?.account_id}
+            </p>
+          </div>
+
+          <div className="mb-8">
+            <h4 className="text-2xl font-bold text-blue-700">Donate Now</h4>
             <div className="flex items-center space-x-4 mt-4">
               <input
                 type="number"

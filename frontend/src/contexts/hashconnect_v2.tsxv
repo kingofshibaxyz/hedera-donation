@@ -1,0 +1,182 @@
+import { useAuthStore } from "@/services/stores/useAuthStore";
+import { AccountId, Transaction } from "@hashgraph/sdk";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { HashConnect, HashConnectTypes, MessageTypes } from "hashconnect";
+
+enum HashConnectConnectionState {
+  Disconnected = "Disconnected",
+  Connected = "Connected",
+  Connecting = "Connecting",
+}
+
+type ApprovePairing = MessageTypes.ApprovePairing;
+
+interface HashConnectContextType {
+  hashconnect: HashConnect | null;
+  pairingString: string;
+  pairingData: ApprovePairing | null;
+  connectionState: HashConnectConnectionState;
+  walletAddress: string | null;
+  connectToWallet: () => void;
+  disconnectWallet: () => void;
+  sendTransaction: (
+    accountId: AccountId,
+    transaction: Transaction
+  ) => Promise<any>;
+}
+
+const HashConnectContext = createContext<HashConnectContextType | undefined>(
+  undefined
+);
+
+const appMetadata: HashConnectTypes.AppMetadata = {
+  name: "Hedera Donation",
+  description: "Hedera donation app",
+  icon: "https://hedera-donation.kingofshiba.xyz/favicon.ico",
+  url: "https://hedera-donation.kingofshiba.xyz",
+};
+
+export const HashConnectProvider = ({ children }: { children: ReactNode }) => {
+  const hashconnectRef = useRef<HashConnect | null>(null);
+  const [pairingString, setPairingString] = useState<string>("");
+  const [pairingData, setPairingData] = useState<ApprovePairing | null>(null);
+  const [connectionState, setConnectionState] =
+    useState<HashConnectConnectionState>(
+      HashConnectConnectionState.Disconnected
+    );
+  const [walletAddress, setWalletAddress] = useState<string | null>(null);
+
+  const { logout } = useAuthStore();
+
+  const initializeHashConnect = async () => {
+    if (hashconnectRef.current) return;
+
+    const hashconnectInstance = new HashConnect();
+
+    // Initialize HashConnect and retrieve initData
+    const initData = await hashconnectInstance.init(
+      appMetadata,
+      "testnet",
+      false
+    );
+
+    hashconnectRef.current = hashconnectInstance;
+
+    // Set initial pairing string in case you want to display a QR code
+    setPairingString(initData.pairingString);
+
+    // Listen for pairing approvals
+    hashconnectInstance.pairingEvent.on((data: ApprovePairing) => {
+      console.log("Wallet paired:", data);
+      setPairingData(data);
+      if (data.accountIds && data.accountIds.length > 0) {
+        setWalletAddress(data.accountIds[0]);
+        setConnectionState(HashConnectConnectionState.Connected);
+      } else {
+        logout();
+        setConnectionState(HashConnectConnectionState.Disconnected);
+      }
+    });
+
+    // Listen for connection status changes
+    hashconnectInstance.connectionStatusChangeEvent.on((status) => {
+      if (status === "Disconnected") {
+        console.log("Wallet disconnected");
+        setPairingData(null);
+        setWalletAddress(null);
+        setConnectionState(HashConnectConnectionState.Disconnected);
+      }
+    });
+  };
+
+  const connectToWallet = async () => {
+    if (!hashconnectRef.current) await initializeHashConnect();
+    if (!hashconnectRef.current) return;
+
+    setConnectionState(HashConnectConnectionState.Connecting);
+
+    // Find local wallets (like HashPack) and prompt the user to connect
+    hashconnectRef.current.findLocalWallets();
+    await hashconnectRef.current.connectToLocalWallet();
+
+    console.log("Attempted to connect to local wallet.");
+  };
+
+  const disconnectWallet = async () => {
+    const hashconnect = hashconnectRef.current;
+    if (hashconnect && pairingData) {
+      // Disconnect from the currently paired wallet
+      await hashconnect.disconnect(pairingData.topic);
+      setPairingData(null);
+      setWalletAddress(null);
+      setConnectionState(HashConnectConnectionState.Disconnected);
+    }
+  };
+
+  const sendTransaction = async (
+    accountId: AccountId,
+    transaction: Transaction
+  ) => {
+    const hashconnect = hashconnectRef.current;
+    if (!hashconnect || !pairingData) {
+      console.error("HashConnect or PairingData not available");
+      return;
+    }
+
+    // Build a MessageTypes.Transaction request
+    const tx: MessageTypes.Transaction = {
+      topic: pairingData.topic,
+      byteArray: transaction.toBytes(),
+      metadata: {
+        accountToSign: accountId.toString(),
+        returnTransaction: false,
+      },
+    };
+
+    const response = await hashconnect.sendTransaction(pairingData.topic, tx);
+    console.log("Transaction response:", response);
+    return response;
+  };
+
+  useEffect(() => {
+    initializeHashConnect();
+    return () => {
+      disconnectWallet();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <HashConnectContext.Provider
+      value={{
+        hashconnect: hashconnectRef.current,
+        pairingString,
+        pairingData,
+        connectionState,
+        walletAddress,
+        connectToWallet,
+        disconnectWallet,
+        sendTransaction,
+      }}
+    >
+      {children}
+    </HashConnectContext.Provider>
+  );
+};
+
+export const useHashConnectContext = () => {
+  const context = useContext(HashConnectContext);
+  if (!context) {
+    throw new Error(
+      "useHashConnectContext must be used within a HashConnectProvider"
+    );
+  }
+  return context;
+};

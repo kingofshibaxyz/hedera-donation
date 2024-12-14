@@ -31,6 +31,7 @@ export interface IToken {
   name: string;
   symbol: string;
   address: string;
+  account_id: string | null;
 }
 export interface Organizer {
   id: number;

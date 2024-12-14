@@ -4,6 +4,7 @@ export interface LogEntry {
     topics: string[];
     data: string;
     transaction_hash: string;
+    timestamp: string;
 }
 
 export interface DecodedLog {
@@ -11,6 +12,7 @@ export interface DecodedLog {
     signature: string;
     args: Record<string, string>;
     transactionHash: string;
+    timestamp: string;
 }
 
 export interface User {
@@ -57,6 +59,7 @@ export interface DonationUpsert {
     userId: number;
     transactionHash: string;
     amount: number;
+    time: number;
 }
 
 export interface ApprovedCampaignJoin {

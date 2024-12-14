@@ -29,7 +29,7 @@ export const useWithdrawFunds = (): UseWithdrawFundsResult => {
   const withdrawFunds = async (
     contractId: string,
     campaignId: number,
-    gasLimit: number = 15_000_000
+    gasLimit: number = 200_000
   ) => {
     if (!walletAddress) {
       setError("Wallet is not connected.");

@@ -23,16 +23,16 @@ const HomePage: React.FC = () => {
 
       {/* Hero Section */}
       <section
-        className="relative text-white py-36"
+        className="relative text-white py-60"
         style={{
-          backgroundImage: 'url("https://picsum.photos/seed/picsum/1920/1000")',
+          backgroundImage: 'url("/banner.png")',
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
       >
         <div className="container mx-auto text-center relative z-10">
-          <div className="bg-opacity-80 bg-blue-500 rounded-xl inline-block px-10 py-8 shadow-lg">
-            <h2 className="text-5xl font-extrabold leading-tight text-yellow-300">
+          <div className="bg-opacity-60 bg-green-600 rounded-xl inline-block px-10 py-8 shadow-lg mt-20">
+            <h2 className="text-5xl font-extrabold leading-tight text-white">
               Support Campaigns with Tokens
             </h2>
             <p className="mt-4 text-lg text-white">
@@ -48,7 +48,6 @@ const HomePage: React.FC = () => {
             ) : null}
           </div>
         </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-transparent to-black/70 z-0"></div>
       </section>
 
       {/* Top Campaigns */}

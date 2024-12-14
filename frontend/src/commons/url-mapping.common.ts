@@ -4,7 +4,8 @@ export enum UrlMapping {
   campaign_detail = "/campaign",
   create_campaign = "/create-campaign",
   how_to_use = "/how-to-use",
-  all_campaign = "/all-campaign",
+  all_campaign = "/campaigns",
   user_info = "/user-info",
   login = "/login",
+  faucet = "/faucet",
 }

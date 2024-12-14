@@ -1,3 +1,4 @@
+import DonationLogo from "@/assets/logos/donation_logo.jpg";
 import { UrlMapping } from "@/commons/url-mapping.common";
 import { useHashConnectContext } from "@/contexts/hashconnect";
 import { useAuthStore } from "@/services/stores/useAuthStore";
@@ -44,9 +45,9 @@ const NavigationBar = () => {
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-2">
           <img
-            src="https://placehold.co/40x40"
+            src={DonationLogo}
             alt="Logo"
-            className="w-10 h-10 rounded-full"
+            className="w-12 h-12 rounded-full"
           />
           <h1 className="text-2xl font-bold text-white">Hedera Donations</h1>
         </Link>
@@ -60,8 +61,9 @@ const NavigationBar = () => {
           {[
             { label: "Home", path: UrlMapping.home },
             { label: "Info", path: UrlMapping.info },
-            { label: "How to Use", path: UrlMapping.how_to_use },
             { label: "All Campaigns", path: UrlMapping.all_campaign },
+            { label: "How to Use", path: UrlMapping.how_to_use },
+            { label: "Faucet", path: UrlMapping.faucet },
           ].map(({ label, path }) => (
             <Link
               key={label}
@@ -112,7 +114,7 @@ const NavigationBar = () => {
           ) : (
             <button
               onClick={handleLoginClick}
-              className="bg-green-600 text-white py-2 px-5 rounded-full font-medium shadow-md hover:bg-green-700 transition duration-300"
+              className="bg-yellow-400 text-blue-800 py-2 px-5 rounded-full font-medium shadow-md hover:bg-yellow-500 transition duration-300"
             >
               Connect Wallet
             </button>

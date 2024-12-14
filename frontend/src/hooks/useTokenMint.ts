@@ -1,4 +1,5 @@
 import { useHashConnectContext } from "@/contexts/hashconnect";
+import { accountIdToEvmAddress } from "@/utils/hedera";
 import {
   AccountId,
   ContractExecuteTransaction,
@@ -7,35 +8,37 @@ import {
 } from "@hashgraph/sdk";
 import { useState } from "react";
 
-interface UseHederaDonateResult {
-  donate: (
+interface UseTokenMintResult {
+  mint: (
     contractId: string,
-    campaignId: number,
+    tokenId: number,
+    recipient: string,
     amount: number,
     gasLimit?: number
-  ) => void;
+  ) => Promise<void>;
   error: string | null;
   loading: boolean;
   success: boolean;
   transactionHash: string | null;
 }
 
-export const useHederaDonate = (): UseHederaDonateResult => {
+export const useTokenMint = (): UseTokenMintResult => {
   const { walletAddress, hashconnect } = useHashConnectContext();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
   const [transactionHash, setTransactionHash] = useState<string | null>(null);
 
-  const donate = async (
+  const mint = async (
     contractId: string,
-    campaignId: number,
+    tokenId: number,
+    recipient: string,
     amount: number,
     gasLimit: number = 200_000
   ) => {
     if (!walletAddress) {
       setError("Wallet is not connected.");
-      return null;
+      return;
     }
 
     setError(null);
@@ -47,15 +50,16 @@ export const useHederaDonate = (): UseHederaDonateResult => {
       const signer = hashconnect?.getSigner(
         AccountId.fromString(walletAddress) as any
       ) as unknown as Signer;
-
+      const evmAddress = await accountIdToEvmAddress(recipient);
       const transaction = await new ContractExecuteTransaction()
         .setContractId(contractId)
         .setGas(gasLimit)
         .setFunction(
-          "donate",
+          "mint",
           new ContractFunctionParameters()
-            .addUint256(campaignId) // Campaign ID
-            .addUint256(amount) // Donation amount
+            .addUint256(tokenId)
+            .addAddress(evmAddress)
+            .addUint256(amount)
         )
         .freezeWithSigner(signer);
 
@@ -64,16 +68,15 @@ export const useHederaDonate = (): UseHederaDonateResult => {
       setTransactionHash(hash);
       setSuccess(true);
     } catch (err) {
-      console.error("Failed to donate:", err);
+      console.error("Failed to mint token:", err);
       const errorMessage =
         (err as Error)?.message || "An unexpected error occurred.";
-      setError(`Failed to process donation: ${errorMessage}`);
+      setError(`Failed to mint token: ${errorMessage}`);
       setSuccess(false);
-      return null;
     } finally {
       setLoading(false);
     }
   };
 
-  return { donate, error, loading, success, transactionHash };
+  return { mint, error, loading, success, transactionHash };
 };

@@ -392,10 +392,7 @@ const processNewCampaigns = async (): Promise<void> => {
     }
 
     const provider = new ethers.JsonRpcProvider(process.env.RPC_URL || "https://testnet.hashio.io/api");
-    const workerSigner = new ethers.Wallet(
-        process.env.WORKER_PRIVATE_KEY! || "3256663ebc63920e92f84f242cdff19b6b7fc489d88c4528fc2037b44c128e1e",
-        provider,
-    );
+    const workerSigner = new ethers.Wallet(process.env.WORKER_PRIVATE_KEY! || "", provider);
 
     for (const campaign of pendingCampaigns) {
         console.log(`Processing campaign: ${campaign.title}`);
@@ -575,7 +572,7 @@ const processLogs = async (): Promise<void> => {
 
             // Update the value with the latest timestamp (now)
             await client.query("UPDATE donation_app_lastindexcrawl SET value = $1, updated_at = NOW() WHERE key = $2", [
-                Number(nowTimestamp) - 5,
+                Number(nowTimestamp) - 100,
                 key,
             ]);
             console.log(`Database updated for key "${key}" with the latest timestamp.`);
