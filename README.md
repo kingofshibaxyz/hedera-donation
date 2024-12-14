@@ -1,5 +1,10 @@
 # Hedera Donation Platform
 
+## Live Website
+[https://hedera-donation.kingofshiba.xyz/](https://hedera-donation.kingofshiba.xyz/)
+
+**Note**: Please visit the live platform to explore the full functionality of the Hedera Donation project.
+
 ## Project Overview
 
 Hedera Donation is a blockchain-powered donation platform that enables transparent and secure fundraising campaigns using Hedera Hashgraph technology.
