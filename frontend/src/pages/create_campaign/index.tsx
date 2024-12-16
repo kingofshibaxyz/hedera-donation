@@ -19,7 +19,8 @@ const CreateCampaignPage: React.FC = () => {
   const { data: campaignTypes, isLoading: isTypesLoading } = useCampaignTypes();
   const { data: tokens, isLoading: isTokensLoading } = useTokens();
   const { mutate: createCampaign, isPending } = useCreateCampaign();
-  const { mutate: uploadFile } = useUploadFile();
+  const { mutate: uploadFile, isPending: isPendingUploadFile } =
+    useUploadFile();
 
   const [uploadedImage, setUploadedImage] = useState<string>("");
 
@@ -184,20 +185,31 @@ const CreateCampaignPage: React.FC = () => {
                   }
                 }}
               />
-              {uploadedImage && (
+              {isPendingUploadFile ? (
                 <div className="mt-4">
                   <h4 className="text-lg font-medium text-gray-700">
-                    Preview:
+                    Uploading...
                   </h4>
-                  <p className="text-green-500 mt-2">
-                    Image uploaded successfully!
-                  </p>
-                  <img
-                    src={uploadedImage}
-                    alt="Uploaded Preview"
-                    className="w-full h-auto rounded-md shadow-md mt-2"
-                  />
+                  <div className="animate-pulse flex flex-col space-y-4">
+                    <div className="h-48 bg-gray-200 rounded-md"></div>
+                  </div>
                 </div>
+              ) : (
+                uploadedImage && (
+                  <div className="mt-4">
+                    <h4 className="text-lg font-medium text-gray-700">
+                      Preview:
+                    </h4>
+                    <p className="text-green-500 mt-2">
+                      Image uploaded successfully!
+                    </p>
+                    <img
+                      src={uploadedImage}
+                      alt="Uploaded Preview"
+                      className="w-full h-auto rounded-md shadow-md mt-2"
+                    />
+                  </div>
+                )
               )}
             </div>
 
@@ -225,6 +237,13 @@ const CreateCampaignPage: React.FC = () => {
                 placeholder="Enter link to the project website"
                 {...register("project_url")}
               />
+            </div>
+            <div className="text-center text-red-600 text-sm mb-4">
+              <p>
+                Campaigns require admin approval. Please wait for the admin to
+                review and approve your campaign. Once approved, your campaign
+                will be published. *
+              </p>
             </div>
 
             {/* Submit Button */}

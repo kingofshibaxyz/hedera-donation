@@ -69,15 +69,15 @@ const HomePage: React.FC = () => {
               {campaigns?.map((campaign) => (
                 <div
                   key={campaign.id}
-                  className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition duration-300"
+                  className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition duration-300 flex flex-col"
                 >
                   <img
                     src={campaign.image || "https://via.placeholder.com/150"}
                     alt={campaign.title}
                     className="w-full h-56 object-cover"
                   />
-                  <div className="p-6">
-                    <div className="flex justify-between items-center">
+                  <div className="p-6 flex flex-col flex-grow">
+                    <div className="flex justify-between items-center grow">
                       <h4 className="text-2xl font-bold text-blue-700">
                         {campaign.title}
                       </h4>
@@ -100,7 +100,8 @@ const HomePage: React.FC = () => {
                         {campaign.progress}% funded
                       </p>
                     </div>
-                    <div className="flex justify-between items-center mt-6">
+
+                    <div className="flex justify-between items-center mt-5">
                       <button
                         onClick={() =>
                           navigate(
@@ -157,7 +158,7 @@ const HomePage: React.FC = () => {
                   key={donor.id}
                   className="bg-white shadow-lg rounded-lg p-8 flex items-center space-x-6 hover:shadow-xl transition duration-300"
                 >
-                  <div className="w-16 h-16 rounded-full bg-yellow-400 text-white flex items-center justify-center font-bold text-2xl shadow-md">
+                  <div className="min-w-16 min-h-16 rounded-full bg-yellow-400 text-white flex items-center justify-center font-bold text-2xl shadow-md">
                     {donor.initials}
                   </div>
                   <div>

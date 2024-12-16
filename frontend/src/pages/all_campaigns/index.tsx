@@ -75,7 +75,6 @@ const AllCampaignsPage: React.FC = () => {
                     {campaign.progress || 0}% funded
                   </p>
 
-                  {/* Button always at the bottom */}
                   <div className="mt-5">
                     <div className="flex justify-between items-center">
                       <button
