@@ -38,15 +38,15 @@ const AllCampaignsPage: React.FC = () => {
             {campaigns.map((campaign) => (
               <div
                 key={campaign.id}
-                className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition duration-300"
+                className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition duration-300 flex flex-col min-h-[500px]"
               >
                 <img
                   src={campaign.image || "https://via.placeholder.com/150"}
                   alt={campaign.title}
                   className="w-full h-56 object-cover"
                 />
-                <div className="p-6">
-                  <div className="flex justify-between items-center">
+                <div className="p-6 flex flex-col flex-grow">
+                  <div className="flex justify-between items-center mb-4">
                     <h4 className="text-2xl font-bold text-blue-700">
                       {campaign.title}
                     </h4>
@@ -58,8 +58,10 @@ const AllCampaignsPage: React.FC = () => {
                       {campaign.status}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-600 mb-6">
-                    {campaign.description}
+                  <p className="text-sm text-gray-600 mb-6 flex-grow">
+                    {campaign.description.length > 250
+                      ? `${campaign.description.slice(0, 250)} ...`
+                      : campaign.description}
                   </p>
                   <div className="w-full bg-gray-200 h-3 rounded-full overflow-hidden mb-4">
                     <div
@@ -69,11 +71,13 @@ const AllCampaignsPage: React.FC = () => {
                       }}
                     ></div>
                   </div>
-                  <p className="text-sm text-gray-600 mb-6">
+                  <p className="text-sm text-gray-600">
                     {campaign.progress || 0}% funded
                   </p>
-                  <div className="text-center">
-                    <div className="flex justify-between items-center mt-6">
+
+                  {/* Button always at the bottom */}
+                  <div className="mt-5">
+                    <div className="flex justify-between items-center">
                       <button
                         onClick={() =>
                           navigate(
