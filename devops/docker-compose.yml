@@ -65,8 +65,8 @@ services:
       - ./nginx/.well-known:/etc/nginx/.well-known
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/conf.d/hedera_donation_kingofshiba_xyz.conf:/etc/nginx/conf.d/hedera_donation_kingofshiba_xyz.conf
-      - /etc/letsencrypt/live/hedera-donation.kingofshiba.xyz/fullchain.pem:/etc/letsencrypt/live/hedera-donation.kingofshiba.xyz/fullchain.pem
-      - /etc/letsencrypt/live/hedera-donation.kingofshiba.xyz/privkey.pem:/etc/letsencrypt/live/hedera-donation.kingofshiba.xyz/privkey.pem
+      - /etc/letsencrypt/live/lucky-donation.kingofshiba.xyz/fullchain.pem:/etc/letsencrypt/live/lucky-donation.kingofshiba.xyz/fullchain.pem
+      - /etc/letsencrypt/live/lucky-donation.kingofshiba.xyz/privkey.pem:/etc/letsencrypt/live/lucky-donation.kingofshiba.xyz/privkey.pem
     networks:
       - hedera_hackathon_network
 
