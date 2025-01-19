@@ -1,5 +1,5 @@
 # Example Next.js Dockerfile with increased heap size
-FROM node:20-slim
+FROM --platform=$TARGETPLATFORM node:20-slim
 
 WORKDIR /app
 

@@ -13,12 +13,7 @@ import "hardhat-contract-sizer";
 import "hardhat-log-remover";
 dotenv.config();
 
-const accounts = [
-    process.env.PRIVATE_KEY || "",
-    process.env.PRIVATE_KEY_1 || "",
-    process.env.PRIVATE_KEY_2 || "",
-    process.env.PRIVATE_KEY_3 || "",
-];
+const accounts = [process.env.PRIVATE_KEY || "", process.env.PRIVATE_KEY_1 || "", process.env.PRIVATE_KEY_2 || ""];
 const config: HardhatUserConfig = {
     defaultNetwork: "hardhat",
     networks: {
